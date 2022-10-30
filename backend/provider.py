@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+from datetime import datetime
 import json
+from time import mktime
 from feedparser import parse
 
 article_attrs = ['title', 'link', 'summary', 'published_parsed']
@@ -7,17 +9,32 @@ article_attrs = ['title', 'link', 'summary', 'published_parsed']
 @dataclass
 class NewsProvider:
     source: str
-    feed_url: str
+    # URLs are ordered by category 
+    # [ technology, world, politics, business, entertainment ]
+    feed_category_urls: dict[str, str]
 
     def get_articles(self) -> list[dict]:
-        xml = parse(self.feed_url)
-        if xml.get('status') != 200:
-            return []
-        articles = xml.entries
+        articles = []
+        for category_id, feed_url in enumerate(self.feed_category_urls):
+            xml = parse(feed_url)
+            if xml.get('status') != 200:
+                print(f'[provider] [{self.source}] Error: {xml.get("status")}, cat_id: {category_id}')
+                continue
+            
+            category_articles = xml.entries
 
-        # Filter dictionary
-        articles = [{key: val for (key, val) in article.items() if key in article_attrs}
-                    for article in articles]
+            # Filter dictionary
+            category_articles = [{key: val for (key, val) in article.items() if key in article_attrs}
+                        for article in category_articles]
+            for article in category_articles:
+                time_struct = article.pop('published_parsed')
+                article.update({
+                    'published_date': datetime.fromtimestamp(mktime(time_struct)),
+                    'provider': self.source,
+                    'category_id': category_id
+                })
+            print(f'[provider] [{self.source}] Fetched {len(category_articles)} aricles, cat_id: {category_id}')
+            articles.extend(category_articles)
         return articles
 
 
