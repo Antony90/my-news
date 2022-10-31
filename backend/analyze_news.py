@@ -62,6 +62,7 @@ class AnalyzeNews:
             else:
                 insert_count += 1
         return insert_count
+    
 
     def get_sentiment(self, articles):
         article_titles = [article.get('title') for article in articles]

@@ -3,15 +3,16 @@ from datetime import datetime
 import json
 from time import mktime
 from feedparser import parse
+import opengraph_parse
 
 article_attrs = ['title', 'link', 'summary', 'published_parsed']
-
 @dataclass
 class NewsProvider:
     source: str
     # URLs are ordered by category 
     # [ technology, world, politics, business, entertainment ]
     feed_category_urls: dict[str, str]
+
 
     def get_articles(self) -> list[dict]:
         articles = []
@@ -28,10 +29,17 @@ class NewsProvider:
                         for article in category_articles]
             for article in category_articles:
                 time_struct = article.pop('published_parsed')
+                
+                # Get the url used by preview images using open graph meta tags.
+                # See https://ogp.me/
+                img_url = opengraph_parse \
+                    .parse_page(article.get('link'), ["og:image"]) \
+                    .get("og:image")
                 article.update({
                     'published_date': datetime.fromtimestamp(mktime(time_struct)),
                     'provider': self.source,
-                    'category_id': category_id
+                    'category_id': category_id,
+                    'img_url': img_url
                 })
             print(f'[provider] [{self.source}] Fetched {len(category_articles)} aricles, cat_id: {category_id}')
             articles.extend(category_articles)
