@@ -1,0 +1,3 @@
+[submodule "rss-news-sentiment-analysis"]
+	path = rss-news-sentiment-analysis
+	url = https://github.com/Antony90/rss-news-sentiment-analysis
