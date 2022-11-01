@@ -8,4 +8,6 @@ export class Article {
   sentiment!: number;
   category_id!: number;
   provider!: string;
+  img_url!: string;
+  link!: string;
 }

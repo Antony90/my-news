@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Article } from "../models/Article";
-import ArticleList from "./ArticleList";
+import ArticleList from "./ArticleGrid";
 
 
 export const ArticleManager: React.FC<{
@@ -17,12 +17,4 @@ export const ArticleManager: React.FC<{
       )}
     </div>
   );
-};
-
-const styles = {
-  content: {
-    flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 20,
-  },
 };
