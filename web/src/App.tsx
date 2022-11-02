@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import * as Realm from "realm-web";
 import { app } from "./services/realm";
 
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { fetchArticles, selectArticles } from "./store/reducers/articles";
 import { ArticleManager } from "./components/ArticleManager";
-import { AppShell, Group, Header, TextInput, ThemeIcon, Title,  } from "@mantine/core";
-import { IconMoodHappy } from "@tabler/icons";
+import { AppShell } from "@mantine/core";
 import NavBar from "./components/NavBar";
+import Header from "./components/Header";
+import { useHotkeys } from "@mantine/hooks";
 export const authenticate = async (app: Realm.App) => {
   const credentials = Realm.Credentials.anonymous();
   try {
@@ -19,7 +20,7 @@ export const authenticate = async (app: Realm.App) => {
 
 const App = () => {
   const dispatch = useAppDispatch();
-  const articles = useAppSelector(selectArticles);
+  const articles = useAppSelector(selectArticles).slice(0, 50);
 
   useEffect(() => {
     authenticate(app);
@@ -30,21 +31,7 @@ const App = () => {
         <AppShell 
           padding="md" 
           navbar={<NavBar />}
-          header={
-            <Header height={100} >
-              <Group position="left" sx={{ height: '100%' }} mx="xl">
-                <ThemeIcon variant="filled" radius="md" size="xl" color="green">
-                  <IconMoodHappy />
-                </ThemeIcon>
-                <Title>My News</Title>
-                <TextInput
-                  placeholder="Search news"
-                  radius="xl"
-                  size="md"
-                />
-              </Group>
-            </Header>
-          }  
+          header={<Header />}  
         >
           <ArticleManager articles={articles} />
         </AppShell>
