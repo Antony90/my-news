@@ -1,6 +1,7 @@
 import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import React, { useState } from 'react'
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 import store from './store';
 
 const AppWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -11,7 +12,9 @@ const AppWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <Provider store={store}>
-          {children}
+          <BrowserRouter>
+            {children}
+          </BrowserRouter>
         </Provider>
       </MantineProvider>
     </ColorSchemeProvider>

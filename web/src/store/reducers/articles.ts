@@ -65,5 +65,6 @@ export const articlesSlice = createSlice({
 });
 
 export const selectArticles = (state: RootState) => state.articles.all;
+export const selectStatus = (state: RootState) => state.articles.status;
 
 export default articlesSlice.reducer;

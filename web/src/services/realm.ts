@@ -23,4 +23,15 @@ export const getArticles = async (articlesRef: any): Promise<Article[]> => {
         { $sort: { published_data: -1 }} // most recent first
     ]);
 }
+
+
+export const authenticate = async (app: Realm.App) => {
+    const credentials = Realm.Credentials.anonymous();
+    try {
+      await app.logIn(credentials);
+    } catch (err) {
+      console.error("Failed to log in", err);
+    }
+  };
+
 export const app = new Realm.App(config);
