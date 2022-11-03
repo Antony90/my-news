@@ -9,9 +9,9 @@ export const ArticlesPage = () => {
 
   switch (status) {
     case Status.Loading:
-      return <div>"Loading articles"</div>;
+      return <div>Loading articles...</div>;
     case Status.Failure:
-      return <div>"Could not fetch articles"</div>;
+      return <div>Could not fetch articles</div>;
     case Status.Complete:
       return <ArticleGrid articles={articles} />;
     default:

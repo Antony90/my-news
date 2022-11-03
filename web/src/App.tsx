@@ -7,8 +7,36 @@ import { ArticlesPage } from "./components/pages/ArticlesPage";
 import { AppShell } from "@mantine/core";
 import NavBar from "./components/NavBar";
 import Header from "./components/Header";
-import { Route, Routes } from "react-router-dom";
+import { createBrowserRouter, createHashRouter, Route, RouterProvider, Routes } from "react-router-dom";
 import AnalyticsPage from "./components/pages/AnalyticsPage";
+import RootDashboard from "./components/pages/RootDashboard";
+import FeedPage from "./components/pages/FeedPage";
+
+
+const router = createHashRouter([{
+  path: "/",
+  element: <RootDashboard />,
+  children: [
+    {
+      index: true,
+      element: <ArticlesPage />
+    },
+    {
+      path: "analytics",
+      element: <AnalyticsPage />
+    },
+    {
+      path: "feeds",
+      element: <div>Feeds</div>,
+      children: [
+        {
+          path: ":id",
+          element: <FeedPage/>
+        }
+      ]
+    }
+  ]
+}])
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -19,14 +47,7 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <AppShell padding="md" navbar={<NavBar />} header={<Header />}>
-      <Routes>
-        <Route path="/" element={<ArticlesPage />} />
-        <Route path="/analytics" element={<AnalyticsPage />} />
-        <Route path="/feeds" element={<div>Feeds</div>} />
-        <Route path="/feeds/:id" element={<div>Feed id</div>} />
-      </Routes>
-    </AppShell>
+    <RouterProvider router={router}/>
   );
 };
 

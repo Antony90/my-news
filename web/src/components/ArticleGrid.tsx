@@ -2,15 +2,18 @@ import React from "react";
 
 import { ArticleItem } from "./ArticleItem";
 import { Article } from "../models/Article";
-import Masonry from "react-responsive-masonry";
+import Masonry from 'react-responsive-masonry';
+import { useViewportSize } from "@mantine/hooks";
+
 
 type ArticleListProps = {
   articles: Article[];
 };
 
 export const ArticleGrid: React.FC<ArticleListProps> = ({ articles }) => {
+  const { width } = useViewportSize();
   return articles.length > 0 ? (
-    <Masonry columnsCount={5}>
+    <Masonry columnsCount={width > 1800 ? 5 : width > 1200 ? 4 : 3} >
       {articles.map((article) => {
         return <ArticleItem article={article} />;
       })}
@@ -20,11 +23,5 @@ export const ArticleGrid: React.FC<ArticleListProps> = ({ articles }) => {
   ); // TODO: show large centered badge
 };
 
-const styles = {
-  listContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-};
-
 export default ArticleGrid;
+

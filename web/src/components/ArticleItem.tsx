@@ -9,12 +9,9 @@ import {
   Divider,
   Stack,
   useMantineColorScheme,
+  Avatar,
 } from "@mantine/core";
-import {
-  IconChevronDown,
-  IconChevronUp,
-  IconLayoutNavbarExpand,
-} from "@tabler/icons";
+import { IconBallpen, IconChevronDown, IconChevronUp } from "@tabler/icons";
 import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 
@@ -22,6 +19,28 @@ import { Article } from "../models/Article";
 
 type ArticleItemProps = {
   article: Article;
+};
+
+const mapProvider = (provider: string) => {
+  switch (provider.toLowerCase()) {
+    case "bbc":
+      return [
+        "red",
+        "https://seeklogo.com/images/B/bbc-news-logo-E3DECDA65A-seeklogo.com.png",
+      ];
+    case "sky news":
+      return [
+        "yellow",
+        "https://the-motherlode.com/wp-content/uploads/2020/11/o2IGXWqj_400x400.jpg",
+      ];
+    case "daily mail":
+      return [
+        "blue",
+        "https://i.dailymail.co.uk/i/pix/2016/04/06/02/0BFCB585000005DC-3525479-image-m-25_1459906645394.jpg",
+      ];
+    default:
+      return ["gray", ""];
+  }
 };
 
 const mapProviderToColour = (provider: string) => {
@@ -37,14 +56,14 @@ const mapProviderToColour = (provider: string) => {
   }
 };
 
-const mapCategoryIdToName = (categoryId: number) => {
+const mapCategoryId = (categoryId: number) => {
   return [
-    "Top stories",
-    "Technology",
-    "World",
-    "Politics",
-    "Business",
-    "Entertainment",
+    ["Top stories", "red"],
+    ["Technology", "orange"],
+    ["World", "yellow"],
+    ["Politics", "green"],
+    ["Business", "blue"],
+    ["Entertainment", "purple"],
   ][categoryId];
 };
 
@@ -55,16 +74,16 @@ const mapSentimentToColor = (sentiment: number) => {
 };
 
 const hoverStyle = {
-  transition: 'transform .5s',
-  '&:hover': {
-    transform: 'scale(1.03)'
-  }
+  transition: "transform .5s",
+  "&:hover": {
+    transform: "scale(1.03)",
+  },
 };
 
 export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
   const [expanded, setExpanded] = useState(false);
-  const { colorScheme } = useMantineColorScheme()
-  const dark = colorScheme == 'dark';
+  const { colorScheme } = useMantineColorScheme();
+  const dark = colorScheme === "dark";
   const {
     title,
     img_url,
@@ -75,6 +94,10 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
     category_id,
     published_date,
   } = article;
+
+  const [providerColor, img] = mapProvider(provider);
+
+  const [categoryName, badgeColor] = mapCategoryId(category_id);
 
   return (
     <Card shadow="lg" radius="lg" p="lg" m="sm" withBorder sx={hoverStyle}>
@@ -88,19 +111,31 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
       </Card.Section>
 
       <Group position="left" mt="md" mb="xs">
-        <Badge color={mapProviderToColour(provider)} variant="light">
+        <Badge
+          pl={0}
+          color={providerColor}
+          variant="light"
+          leftSection={
+            <Avatar alt="news provider icon" size={16} mr={5} src={img} />
+          }
+        >
           {provider}
         </Badge>
 
-        <Badge color="gray" variant="filled">
-          {mapCategoryIdToName(category_id)}
+        <Badge color={badgeColor} variant="light">
+          {categoryName}
         </Badge>
       </Group>
-      <a href={link} target='_blank' 
-        style={{ color: dark ? 'white' : 'black', textDecoration: 'none' }}
-        onMouseEnter={e => e.currentTarget.style.textDecoration = 'underline'}
-        onMouseLeave={e => e.currentTarget.style.textDecoration = 'none'}
->
+      <a
+        href={link}
+        target="_blank"
+        rel="noreferrer"
+        style={{ color: dark ? "white" : "black", textDecoration: "none" }}
+        onMouseEnter={(e) =>
+          (e.currentTarget.style.textDecoration = "underline")
+        }
+        onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+      >
         <Title order={4}>{title}</Title>
       </a>
       <Group position="apart" pt="sm">
@@ -114,13 +149,27 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
           </Badge>
         </Group>
         <Group position="left">
-          <Badge color="gray" radius="xs" variant="filled">
+          <Badge
+            color="gray"
+            radius="xl"
+            variant="outline"
+            sx={{ paddingLeft: 0 }}
+            leftSection={
+              <IconBallpen size={15} style={{ marginTop: 4, marginLeft: 4 }} />
+            }
+            styles={{
+              inner: {
+                textTransform: "none",
+              },
+            }}
+          >
             <ReactTimeAgo
               date={published_date}
               tooltip={true}
               timeStyle="twitter"
               locale="en-GB"
-            />
+            />{" "}
+            ago
           </Badge>
           <ActionIcon onClick={() => setExpanded((e) => !e)}>
             {expanded ? <IconChevronUp /> : <IconChevronDown />}

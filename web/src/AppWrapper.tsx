@@ -12,9 +12,7 @@ const AppWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>
         <Provider store={store}>
-          <BrowserRouter>
-            {children}
-          </BrowserRouter>
+          {children}
         </Provider>
       </MantineProvider>
     </ColorSchemeProvider>

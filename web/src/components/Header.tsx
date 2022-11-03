@@ -1,8 +1,9 @@
 import React from "react";
-import { Header as MTHeader, Group, ThemeIcon, Title, Divider} from '@mantine/core'
+import { Header as MTHeader, Group, ThemeIcon, Title, Divider, MultiSelect} from '@mantine/core'
 import SearchBar from "./SearchBar";
-import { IconMoodHappy, IconSearch } from "@tabler/icons";
+import { IconMoodHappy } from "@tabler/icons";
 import DarkModeToggle from "./DarkModeToggle";
+
 
 
 const Header = () => {
@@ -16,9 +17,9 @@ const Header = () => {
           <Title>My News</Title>
         </Group>
         <Group position="left">
-          <DarkModeToggle />
-          <Divider orientation="vertical"/>
           <SearchBar />
+          <Divider orientation="vertical"/>
+          <DarkModeToggle />
         </Group>
       </Group>
     </MTHeader>
