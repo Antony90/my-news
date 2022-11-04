@@ -44,7 +44,7 @@ const App = () => {
   useEffect(() => {
     authenticate(app);
     dispatch(fetchArticles());
-  }, [dispatch]);
+  }, []);
 
   return (
     <RouterProvider router={router}/>

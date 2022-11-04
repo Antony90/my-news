@@ -20,23 +20,35 @@ export const fetchArticles = createAsyncThunk("articles/fetch", async () => {
   const now = new Date().getTime();
 
   // Time in ms since last articles fetch
-  let diff = -1; // unset
+  let timeDiff = 0; // unset
   if (lastFetchStr) {
     const lastFetchDate = Number(lastFetchStr);
-    diff = now - lastFetchDate;
+    timeDiff = now - lastFetchDate;
   }
-
   // If 1 hour out of date or key not set
   let articles: Article[];
-  if (diff > 1000 * 3600 || diff === -1) {
+  if (timeDiff > 1000 * 3600 || timeDiff === 0) {
     articles = await db
       .collection("articles")
-      .aggregate([{ $sort: { published_date: -1 } }]);
-    // FIXME: convert ObjectId to String    
+      .aggregate([
+        { $sort: { published_date: -1 } },
+        { $limit: 200 },
+        { $unset: "_id" },
+        {
+          $set: {
+            published_date: {
+              // Date objects aren't serializable and redux toolkit recommends
+              // state with only serializable objects
+              $convert: { input: "$published_date", to: "string" },
+            },
+          },
+        },
+      ]);
+    // FIXME: convert ObjectId to String
     localStorage.setItem("articles", JSON.stringify(articles));
     localStorage.setItem("last_fetch", String(now));
   } else {
-    const articlesJSON = localStorage.getItem("articles") || "";
+    const articlesJSON = localStorage.getItem("articles") || "[]";
     articles = JSON.parse(articlesJSON);
   }
   return articles;
@@ -59,6 +71,7 @@ export const articlesSlice = createSlice({
 
       .addCase(fetchArticles.rejected, (state, action) => {
         state.status = Status.Failure;
+        console.log(action.error.message);
       });
   },
 });

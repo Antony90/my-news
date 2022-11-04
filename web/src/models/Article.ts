@@ -1,10 +1,9 @@
 import { Realm } from '@realm/react';
 
 export class Article {
-  _id!: Realm.BSON.ObjectId;
   title!: string;
   summary!: string;
-  published_date!: Date;
+  published_date!: string;
   sentiment!: number;
   category_id!: number;
   provider!: string;

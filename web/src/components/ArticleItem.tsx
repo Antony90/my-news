@@ -19,6 +19,7 @@ import { Article } from "../models/Article";
 
 type ArticleItemProps = {
   article: Article;
+  key: number;
 };
 
 const mapProvider = (provider: string) => {
@@ -164,7 +165,7 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
             }}
           >
             <ReactTimeAgo
-              date={published_date}
+              date={new Date(published_date)}
               tooltip={true}
               timeStyle="twitter"
               locale="en-GB"

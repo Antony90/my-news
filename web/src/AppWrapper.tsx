@@ -5,9 +5,22 @@ import { BrowserRouter } from 'react-router-dom';
 import store from './store';
 
 const AppWrapper: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>('light');
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'));
+  let savedColorScheme: ColorScheme;
+  const themeStr = localStorage.getItem("dark_mode") || 'dark';
+
+  if (themeStr === 'light' || themeStr === 'dark') {
+    savedColorScheme = themeStr;
+  } else {
+    savedColorScheme = 'dark';
+  }
+
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(savedColorScheme);
+  const toggleColorScheme = (value?: ColorScheme) => {
+    const newColor = value || (colorScheme === 'dark' ? 'light' : 'dark');
+    setColorScheme(newColor);
+    localStorage.setItem("dark_mode", newColor);
+
+  }
   return (
     <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
       <MantineProvider theme={{ colorScheme }} withGlobalStyles withNormalizeCSS>

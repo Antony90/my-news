@@ -1,6 +1,12 @@
-import { Kbd, MultiSelect } from '@mantine/core';
-import { IconCross, IconSearch } from '@tabler/icons'
-import { useState } from 'react';
+import { Kbd, MultiSelect } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
+import { IconCross, IconSearch } from "@tabler/icons";
+import { useEffect, useState } from "react";
+import { useAppDispatch } from "../store/hooks";
+import {
+  setTags as setFilterTags,
+  setSearch as setFilterSearch,
+} from "../store/reducers/filter";
 
 const filterLabels = [
   { label: "Top stories", value: "0", group: "Category" },
@@ -12,18 +18,24 @@ const filterLabels = [
   { label: "BBC", value: "BBC", group: "Provider" },
   { label: "Sky News", value: "Sky News", group: "Provider" },
   { label: "Daily Mail", value: "Daily Mail", group: "Provider" },
-]
-
+];
 
 const SearchBar = () => {
-  // const focusTrapRef = useFocusTrap(false);
-  // useHotkeys([
-  //   ['ctrl+/', () => searchBoxRef.current ]);
+  const [search, setSearch] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [dTags] = useDebouncedValue(tags, 500);
+  const [dSearch] = useDebouncedValue(search, 500);
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(setFilterTags(dTags));
+    dispatch(setFilterSearch(dSearch));
+  }, [dTags, dSearch]);
 
   const keyButtonDisplay = (
-    <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <Kbd>Ctrl</Kbd>
-      <span style={{ margin: '0 5px' }}>+</span>
+      <span style={{ margin: "0 5px" }}>+</span>
       <Kbd>/</Kbd>
     </div>
   );
@@ -38,16 +50,20 @@ const SearchBar = () => {
       maxDropdownHeight={260}
       sx={{ width: 400 }}
       transitionDuration={150}
-      transition="slide-down"
+      transition="pop-top-left"
       transitionTimingFunction="ease"
       icon={<IconSearch size={16} />}
       radius="md"
       size="md"
+      shadow="lg"
       rightSection={keyButtonDisplay}
       rightSectionWidth={100}
-
+      value={tags}
+      onChange={(selectedTags) => setTags(selectedTags)}
+      searchValue={search}
+      onSearchChange={(newSearch) => setSearch(newSearch)}
     />
-  )
-}
+  );
+};
 
-export default SearchBar
+export default SearchBar;
