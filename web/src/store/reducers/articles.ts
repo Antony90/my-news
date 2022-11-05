@@ -32,7 +32,7 @@ export const fetchArticles = createAsyncThunk("articles/fetch", async () => {
       .collection("articles")
       .aggregate([
         { $sort: { published_date: -1 } },
-        { $limit: 200 },
+        { $limit: 1000 },
         { $unset: "_id" },
         {
           $set: {

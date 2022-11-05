@@ -81,7 +81,7 @@ const hoverStyle = {
   },
 };
 
-export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
+export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
   const [expanded, setExpanded] = useState(false);
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
@@ -137,7 +137,7 @@ export const ArticleItem: React.FC<ArticleItemProps> = ({ article }) => {
         }
         onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
       >
-        <Title order={4}>{title}</Title>
+        <Title order={6}>{title}</Title>
       </a>
       <Group position="apart" pt="sm">
         <Group position="left">

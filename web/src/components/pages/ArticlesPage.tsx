@@ -8,7 +8,7 @@ const {
 } = Status;
 
 export const ArticlesPage = () => {
-  const articles = useAppSelector(selectArticles).slice(0, 50);
+  const articles = useAppSelector(selectArticles)
   const status = useAppSelector(selectStatus);
   switch (status) {
     case Loading:
@@ -16,6 +16,8 @@ export const ArticlesPage = () => {
     case Failure:
       return <div>Failure</div>
     default:
-      return <ArticleGrid articles={articles} status={status} />;
+      return (
+      <ArticleGrid articles={articles} status={status} />
+    );
   }
 };

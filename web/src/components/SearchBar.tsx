@@ -6,6 +6,7 @@ import { useAppDispatch } from "../store/hooks";
 import {
   setTags as setFilterTags,
   setSearch as setFilterSearch,
+  setLoading,
 } from "../store/reducers/filter";
 
 const filterLabels = [
@@ -31,6 +32,11 @@ const SearchBar = () => {
     dispatch(setFilterTags(dTags));
     dispatch(setFilterSearch(dSearch));
   }, [dTags, dSearch]);
+
+  const loading = dTags !== tags || dSearch !== search;
+  useEffect(() => {
+    dispatch(setLoading(loading))
+  }, [loading])
 
   const keyButtonDisplay = (
     <div style={{ display: "flex", alignItems: "center" }}>
