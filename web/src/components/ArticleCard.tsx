@@ -10,8 +10,10 @@ import {
   Stack,
   useMantineColorScheme,
   Avatar,
+  Button,
+  Tooltip,
 } from "@mantine/core";
-import { IconBallpen, IconChevronDown, IconChevronUp } from "@tabler/icons";
+import { IconBallpen, IconCaretDown, IconCaretUp, IconChevronDown, IconChevronUp, IconCircleCaretUp, IconInfoCircle, IconMaximize, IconMessage2 } from "@tabler/icons";
 import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 
@@ -81,6 +83,10 @@ const hoverStyle = {
   },
 };
 
+function submitRating(rating: number) {
+
+}
+
 export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
   const [expanded, setExpanded] = useState(false);
   const { colorScheme } = useMantineColorScheme();
@@ -97,15 +103,15 @@ export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
   } = article;
 
   const [providerColor, img] = mapProvider(provider);
-
   const [categoryName, badgeColor] = mapCategoryId(category_id);
+
 
   return (
     <Card shadow="lg" radius="lg" p="lg" m="sm" withBorder sx={hoverStyle}>
       <Card.Section>
         <Image
           src={img_url}
-          height={100}
+          height={120}
           alt="article preview image"
           sx={{ boxShadow: "inset 0 0 20px #000000" }}
         />
@@ -141,13 +147,35 @@ export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
       </a>
       <Group position="apart" pt="sm">
         <Group position="left">
-          <Badge
-            color={mapSentimentToColor(sentiment)}
-            radius="xs"
-            variant="filled"
-          >
-            {sentiment.toFixed(2)}
-          </Badge>
+          <Stack spacing={0} align="center" mb={-8}>
+            <Tooltip label={article.votes_up} withinPortal position="right">
+              <Button
+                compact
+                variant="subtle"
+                px={0}
+                onClick={() => submitRating(1)}
+              >
+                <IconCaretUp />
+              </Button>
+            </Tooltip>
+            <Badge
+              color={mapSentimentToColor(sentiment)}
+              radius="xs"
+              variant="filled"
+            >
+              {sentiment.toFixed(2)}
+            </Badge>
+            <Tooltip label={article.votes_down} withinPortal position="right">
+              <Button
+                compact
+                variant="subtle"
+                px={0}
+                onClick={() => submitRating(-1)}
+              >
+                <IconCaretDown />
+              </Button>
+            </Tooltip>
+          </Stack>
         </Group>
         <Group position="left">
           <Badge
@@ -170,11 +198,20 @@ export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
               timeStyle="twitter"
               locale="en-GB"
             />{" "}
-            ago
           </Badge>
-          <ActionIcon onClick={() => setExpanded((e) => !e)}>
-            {expanded ? <IconChevronUp /> : <IconChevronDown />}
-          </ActionIcon>
+          <Button.Group >
+            <Tooltip label="Comment" withinPortal>
+              <Button variant="default" p={8}>
+                <IconMessage2/>
+                3
+              </Button>
+            </Tooltip>
+            <Tooltip label="Description" withinPortal>
+              <Button variant="default" onClick={() => setExpanded((e) => !e)} p={8}>
+                {expanded ? <IconChevronUp /> : <IconChevronDown />}
+              </Button>
+            </Tooltip>
+          </Button.Group>
         </Group>
 
         <Collapse in={expanded}>

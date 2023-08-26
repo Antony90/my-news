@@ -1,4 +1,5 @@
 import { Realm } from '@realm/react';
+import { Comment } from './Comment';
 
 export class Article {
   title!: string;
@@ -9,4 +10,7 @@ export class Article {
   provider!: string;
   img_url!: string;
   link!: string;
+  comments!: Comment[];
+  votes_up!: number;
+  votes_down!: number;
 }
