@@ -12,12 +12,16 @@ import {
   Avatar,
   Button,
   Tooltip,
+  Text,
+  TextInput,
 } from "@mantine/core";
-import { IconBallpen, IconCaretDown, IconCaretUp, IconChevronDown, IconChevronUp, IconCircleCaretUp, IconInfoCircle, IconMaximize, IconMessage2 } from "@tabler/icons";
+import { IconBallpen, IconCaretDown, IconCaretUp, IconChevronDown, IconChevronUp, IconCircleCaretUp, IconCross, IconInfoCircle, IconMaximize, IconMessage2, IconMessagePlus, IconSend, IconX } from "@tabler/icons";
 import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 
 import { Article } from "../models/Article";
+import ArticleCommentList from "./ArticleCommentList";
+import { postComment } from "../services/client";
 
 type ArticleItemProps = {
   article: Article;
@@ -87,8 +91,16 @@ function submitRating(rating: number) {
 
 }
 
+
+enum Extra {
+  Comment, Desc
+}
+
 export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
   const [expanded, setExpanded] = useState(false);
+  const [extraContent, setExtraContent] = useState(Extra.Desc); // expanded section below card
+
+  const [comment, setComment] = useState(""); // controlled text input
   const { colorScheme } = useMantineColorScheme();
   const dark = colorScheme === "dark";
   const {
@@ -199,25 +211,74 @@ export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
               locale="en-GB"
             />{" "}
           </Badge>
-          <Button.Group >
+          <Button.Group>
             <Tooltip label="Comment" withinPortal>
-              <Button variant="default" p={8}>
-                <IconMessage2/>
-                3
+              <Button
+                variant="default"
+                p={8}
+                onClick={() => {
+                  setExtraContent(Extra.Comment);
+                  setExpanded((e) => !e);
+                }}
+              >
+                {expanded && extraContent == Extra.Comment ? (
+                  <IconX size="20px" />
+                ) : (
+                  <>
+                    <IconMessage2 />
+                    {article.comments.length}
+                  </>
+                )}
               </Button>
             </Tooltip>
             <Tooltip label="Description" withinPortal>
-              <Button variant="default" onClick={() => setExpanded((e) => !e)} p={8}>
-                {expanded ? <IconChevronUp /> : <IconChevronDown />}
+              <Button
+                variant="default"
+                onClick={() => {
+                  setExtraContent(Extra.Desc);
+                  setExpanded((e) => !e);
+                }}
+                p={8}
+              >
+                {expanded && extraContent == Extra.Desc ? (
+                  <IconChevronUp />
+                ) : (
+                  <IconChevronDown />
+                )}
               </Button>
             </Tooltip>
           </Button.Group>
         </Group>
 
-        <Collapse in={expanded}>
+        <Collapse in={expanded} style={{ width: "100%" }}>
           <Stack>
             <Divider />
-            {summary}
+            <Stack>
+              {(extraContent == Extra.Comment && (
+                <>
+                  <TextInput
+                    placeholder="Add comment"
+                    icon={<IconMessagePlus size="0.8rem" />}
+                    rightSectionWidth={68}
+                    value={comment}
+                    onChange={(e) => setComment(e.currentTarget.value)}
+                    rightSection={
+                      <Button
+                        variant="subtle"
+                        px={20}
+                        onClick={(e:  React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+                          postComment(e.currentTarget.value).then(() => setComment(""))
+                        }}
+                      >
+                        <IconSend />
+                      </Button>
+                    }
+                  />
+                  <ArticleCommentList comments={article.comments} />
+                </>
+              )) ||
+                (extraContent == Extra.Desc && article.summary)}
+            </Stack>
           </Stack>
         </Collapse>
       </Group>
