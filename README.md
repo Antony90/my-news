@@ -1,26 +1,32 @@
-# My News
+<h1 align="center">My News</h1>
 
-A News app with article Sentiment filtering and analysis.
+<p align="center">A News app with Sentiment analysis, Recommendations and Data Visualization.</p>
 
----
 
 ## Overview
 
-A React web app for a backend service which polls popular RSS news feeds for articles and performs
-sentiment analysis on headlines and descriptions.
+A React frontend for my [backend service and REST API]() which polls popular RSS news feeds for articles and performs sentiment analysis on headlines and descriptions.
 
-### Purpose
-- Classify and filter news articles via their sentiment - positive/neutral/negative.
-- Develop a backend to collate news articles and query sentiment results.
-- Emphasize news article sentiment visually with UI sliders and bold colors.
-- Concisely present articles from various feeds.
+### Main Features
+- Classify news articles with their sentiment score from 1 to -1, positive/neutral/negative.
+  - Tokenized with BERT transformer, then classified with a regression neural network (NN) to output sentiment scores between 1 and -1.
+- Recommendation system using OpenAI text embeddings - filter by semantically similar articles
+  - Generates a joint text embedding of article titles, genre, description which is stored in a Pinecone vector database
+  - Similar embeddings are queried and ranked based on the cosine distance between these vectors.
+
+- User voting system for sentiment, inspired by [hotukdeals](https://www.hotukdeals.com/) and [Reddit](https://www.reddit.com)
+- Articles filtering by metadata - sentiment rating, source and topic.
+- Anonymous commenting / discussion.
+- Data visualization with MongoDB Charts
 
 ### Tech used
 - MongoDB
 - React
-- redux
-- Mantine UI library
-- transformers
+- Redux
+- Mantine React Framework
+- FastAPI
+- Python transformers
+- Pinecone - vector database
 
 ----
 
