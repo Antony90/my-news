@@ -15,7 +15,7 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { IconBallpen, IconCaretDown, IconCaretUp, IconChevronDown, IconChevronUp, IconCircleCaretUp, IconCross, IconInfoCircle, IconMaximize, IconMessage2, IconMessagePlus, IconSend, IconX } from "@tabler/icons";
+import { IconBallpen, IconCaretDown, IconCaretUp, IconChevronDown, IconChevronUp, IconCircleCaretUp, IconCross, IconInfoCircle, IconMaximize, IconMessage2, IconMessagePlus, IconSend, IconWand, IconX } from "@tabler/icons";
 import React, { useState } from "react";
 import ReactTimeAgo from "react-time-ago";
 
@@ -26,6 +26,7 @@ import { postComment } from "../services/client";
 type ArticleItemProps = {
   article: Article;
   key: number;
+  setRecommendArticleID: (id: string) => void
 };
 
 const mapProvider = (provider: string) => {
@@ -96,7 +97,7 @@ enum Extra {
   Comment, Desc
 }
 
-export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
+export const ArticleCard: React.FC<ArticleItemProps> = ({ article, setRecommendArticleID }) => {
   const [expanded, setExpanded] = useState(false);
   const [extraContent, setExtraContent] = useState(Extra.Desc); // expanded section below card
 
@@ -158,7 +159,7 @@ export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
         <Title order={6}>{title}</Title>
       </a>
       <Group position="apart" pt="sm">
-        <Group position="left">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Stack spacing={0} align="center" mb={-8}>
             <Tooltip label={article.votes_up} withinPortal position="right">
               <Button
@@ -188,7 +189,14 @@ export const ArticleCard: React.FC<ArticleItemProps> = ({ article }) => {
               </Button>
             </Tooltip>
           </Stack>
-        </Group>
+          <Tooltip label="Filter semantically similar">
+            <Button size="xs" mt={7} variant="subtle" style={{ border: 'unset' }} onClick={() => {
+              setRecommendArticleID(article.id)
+            }}>
+              <IconWand size={18}/>
+            </Button>
+          </Tooltip>
+        </div>
         <Group position="left">
           <Badge
             color="gray"

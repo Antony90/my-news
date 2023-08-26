@@ -42,7 +42,6 @@ const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    authenticate(app);
     dispatch(fetchArticles());
   }, []);
 

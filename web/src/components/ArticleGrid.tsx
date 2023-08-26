@@ -13,11 +13,12 @@ import { IconArrowUp } from "@tabler/icons";
 type ArticleListProps = {
   articles: Article[];
   status: Status;
+  onRecommendArticleID: (id: string) => void;
 };
 
 const articlesPerPage = 48;
 
-export const ArticleGrid: React.FC<ArticleListProps> = ({ articles }) => {
+export const ArticleGrid: React.FC<ArticleListProps> = ({ articles, onRecommendArticleID: setRecommendArticleID }) => {
   const { width } = useViewportSize();
   const [scroll, scrollTo] = useWindowScroll();
   const { loading, params } = useAppSelector(selectFilter);
@@ -29,15 +30,11 @@ export const ArticleGrid: React.FC<ArticleListProps> = ({ articles }) => {
   const pageSlice = filtered.slice(currPageStart, currPageStart + articlesPerPage);
 
   const numPages = Math.ceil(filtered.length / articlesPerPage);
-
-  const articlesComp = pageSlice.map((article, key) => (
-    <ArticleCard article={article} key={key} />
-  ));
-
+  
   return filtered.length > 0 ? (
     <>
       <Masonry
-        columnsCount={width > 1800 ? 6 : width > 1200 ? 4 : 3}
+        columnsCount={width > 1800 ? 4 : width > 1200 ? 4 : 3}
         style={{ position: "relative" }}
       >
         <LoadingOverlay
@@ -45,7 +42,9 @@ export const ArticleGrid: React.FC<ArticleListProps> = ({ articles }) => {
           transitionDuration={300}
           overlayBlur={3}
         />
-        {articlesComp}
+        {pageSlice.map((article, index) => (
+          <ArticleCard article={article} key={index} setRecommendArticleID={setRecommendArticleID} />
+        ))}
       </Masonry>
       <Divider my="md" mb="xl" />
       <Pagination
