@@ -3,12 +3,16 @@ import { Article } from "../models/Article";
 const config = {
     id: 'my-news-beeaa'
 }
-export const getDatabase = (app: Realm.App) => {
+
+let db;
+
+export const getDatabase = async (app: Realm.App) => {
+    await authenticate(app);
     const mongodb = app.currentUser?.mongoClient("mongodb-atlas");
     if (mongodb === undefined) {
         throw Error("Could not load MongoDB client");
-    } 
-    const db = mongodb.db("test");
+    }
+    db = mongodb.db("test");
     return db;
 
 }
@@ -19,9 +23,9 @@ export const getDatabase = (app: Realm.App) => {
  * @returns Promise of array of Article docs
  */
 export const getArticles = async (articlesRef: any): Promise<Article[]> => {
-    return await articlesRef.aggregate([
-        { $sort: { published_data: -1 }} // most recent first
-    ]);
+  return await articlesRef.aggregate([
+      { $sort: { published_data: -1 }} // most recent first
+  ]);
 }
 
 

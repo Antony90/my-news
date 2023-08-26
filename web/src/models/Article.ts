@@ -2,6 +2,7 @@ import { Realm } from '@realm/react';
 import { Comment } from './Comment';
 
 export class Article {
+  id!: string;
   title!: string;
   summary!: string;
   published_date!: string;

@@ -4,6 +4,7 @@ import type { RootState } from "..";
 import { Article } from "../../models/Article";
 import { app, getDatabase } from "../../services/realm";
 import { Status } from "../constants";
+import { loremIpsum } from "lorem-ipsum";
 
 interface ArticlesState {
   all: Article[];
@@ -15,7 +16,7 @@ const initialState: ArticlesState = {
 };
 
 export const fetchArticles = createAsyncThunk("articles/fetch", async () => {
-  const db = getDatabase(app);
+  const db = await getDatabase(app);
   const lastFetchStr = localStorage.getItem("last_fetch");
   const now = new Date().getTime();
 
@@ -33,6 +34,7 @@ export const fetchArticles = createAsyncThunk("articles/fetch", async () => {
       .aggregate([
         { $sort: { published_date: -1 } },
         { $limit: 1000 },
+        { $addFields: { id: "$_id" } },
         { $unset: "_id" },
         {
           $set: {
@@ -44,6 +46,21 @@ export const fetchArticles = createAsyncThunk("articles/fetch", async () => {
           },
         },
       ]);
+      if (!process.env.DEMO) {
+          const rndDate = () =>
+            new Date(
+              new Date().getTime() - 1000 * 60 * Math.floor(Math.random() * 24)
+            );
+            articles = articles.map((article) => ({
+            ...article,
+            votes_up: Math.floor(Math.random() * 25),
+            votes_down: Math.floor(Math.random() * 10),
+            comments: Array(Math.floor(Math.random() * 10)).fill(0).map((_, i) => ({
+              content: loremIpsum({ sentenceLowerBound: 3, sentenceUpperBound: 15 }),
+              date: rndDate(),
+            })).sort((a, b) => (b.date.getTime() - a.date.getTime())),
+          }));
+    }
     // FIXME: convert ObjectId to String
     localStorage.setItem("articles", JSON.stringify(articles));
     localStorage.setItem("last_fetch", String(now));
